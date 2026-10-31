@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Protótipo de validação de um plano de estudo semanal personalizado." />
+    <meta name="theme-color" content="#17324d" />
+    <title>EstudaIA | Teste de plano de estudos</title>
+    <style>
+      :root { --ink:#17324d; --navy:#0d2237; --sky:#e8f3f8; --mint:#dff3ea; --accent:#e36d3d; --paper:#fffdf9; --line:#c9d9df; --muted:#546775; }
+      * { box-sizing:border-box; }
+      html { scroll-behavior:smooth; }
+      body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height:1.5; }
+      .wrap { width:min(1120px, calc(100% - 40px)); margin:0 auto; }
+      header { padding:21px 0; border-bottom:1px solid rgba(23,50,77,.12); }
+      nav { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+      .brand { color:var(--navy); font-weight:800; letter-spacing:-.04em; font-size:1.25rem; text-decoration:none; }
+      .brand span { color:var(--accent); }
+      .tag { border:1px solid var(--line); border-radius:100px; padding:7px 11px; color:var(--muted); font-size:.8rem; white-space:nowrap; }
+      .hero { padding:72px 0 64px; background:linear-gradient(125deg, var(--sky) 0%, #f9fcfd 48%, var(--mint) 100%); }
+      .eyebrow { display:inline-block; color:#27515c; background:#fff; border:1px solid #cfe1e6; font-size:.82rem; font-weight:700; border-radius:100px; padding:6px 11px; letter-spacing:.03em; }
+      h1,h2,h3,p { margin-top:0; }
+      h1 { max-width:760px; margin:18px 0; font-size:clamp(2.25rem,6vw,4.8rem); line-height:1.03; letter-spacing:-.06em; }
+      .lead { max-width:650px; font-size:1.18rem; color:#3d5667; }
+      .hero-actions { margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+      .button { display:inline-flex; justify-content:center; align-items:center; min-height:48px; padding:12px 19px; background:var(--accent); color:#fff; font-weight:800; border-radius:10px; text-decoration:none; border:1px solid var(--accent); cursor:pointer; font:inherit; }
+      .button:hover { background:#c95729; border-color:#c95729; }
+      .button.secondary { background:transparent; color:var(--ink); border-color:#92aebb; }
+      .microcopy { color:var(--muted); font-size:.87rem; }
+      section { padding:72px 0; }
+      .section-heading { max-width:690px; margin-bottom:30px; }
+      h2 { font-size:clamp(1.65rem,3.2vw,2.55rem); letter-spacing:-.04em; margin-bottom:10px; }
+      .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+      .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:23px; }
+      .card .n { display:block; margin-bottom:23px; color:var(--accent); font-weight:800; font-size:.86rem; }
+      .card h3 { margin-bottom:8px; font-size:1.15rem; }
+      .card p { color:var(--muted); margin-bottom:0; }
+      .tester { background:var(--navy); color:#fff; }
+      .tester .section-heading p { color:#c6d4dc; }
+      form { background:#fff; color:var(--ink); border-radius:16px; padding:clamp(22px,5vw,42px); max-width:850px; }
+      .fields { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+      label { display:block; font-weight:700; font-size:.93rem; }
+      input, select, textarea { width:100%; display:block; margin-top:7px; padding:12px; min-height:44px; color:var(--ink); background:#fff; font:inherit; border:1px solid #9bb4c0; border-radius:8px; }
+      textarea { min-height:100px; resize:vertical; }
+      .full { grid-column:1/-1; }
+      .choices { display:flex; flex-wrap:wrap; gap:9px; margin-top:8px; }
+      .choice { position:relative; }
+      .choice input { position:absolute; opacity:0; pointer-events:none; }
+      .choice span { display:block; padding:9px 11px; border:1px solid #9bb4c0; border-radius:8px; font-weight:600; cursor:pointer; }
+      .choice input:checked + span { color:#123b49; border-color:#2c7c8f; background:#e6f6fa; }
+      .form-note { color:var(--muted); font-size:.84rem; margin:17px 0; }
+      .plan { display:none; margin-top:30px; color:var(--ink); background:#f6fbfc; border:1px solid #98b7c3; border-radius:14px; padding:25px; }
+      .plan.visible { display:block; }
+      .plan-header { display:flex; align-items:start; justify-content:space-between; gap:15px; padding-bottom:17px; border-bottom:1px solid var(--line); }
+      .plan-header h3 { margin:0 0 5px; }
+      .pill { white-space:nowrap; color:#184957; background:var(--mint); border-radius:50px; padding:5px 9px; font-size:.8rem; font-weight:800; }
+      .days { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:18px; }
+      .day { min-height:110px; padding:10px; background:#fff; border:1px solid var(--line); border-radius:8px; font-size:.83rem; }
+      .day strong { display:block; margin-bottom:6px; color:#345366; font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; }
+      .feedback { margin-top:28px; padding-top:23px; border-top:1px solid var(--line); }
+      .feedback h3 { margin-bottom:8px; }
+      .feedback .button { margin-top:12px; }
+      .notice { display:none; margin-top:13px; padding:12px; border-radius:8px; background:#e6f5ec; color:#194c32; font-weight:600; }
+      .notice.visible { display:block; }
+      .how { background:#f5f8f8; }
+      .steps { counter-reset:step; list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+      .steps li { counter-increment:step; padding-top:15px; border-top:2px solid var(--accent); color:#38505f; }
+      .steps li::before { content:counter(step, decimal-leading-zero); display:block; margin-bottom:13px; color:var(--accent); font-weight:900; }
+      footer { padding:28px 0 44px; color:#5e737e; font-size:.9rem; }
+      @media (max-width:760px) { .grid,.steps { grid-template-columns:1fr; } .fields { grid-template-columns:1fr; } .days { grid-template-columns:repeat(2,1fr); } .hero { padding:55px 0; } .tag { display:none; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap"><nav><a class="brand" href="#inicio">Estuda<span>IA</span></a><span class="tag">Protótipo para teste de interesse</span></nav></div>
+    </header>
+    <main>
+      <section class="hero" id="inicio">
+        <div class="wrap">
+          <span class="eyebrow">Teste de 3 minutos para universitários</span>
+          <h1>Um plano de estudo que cabe na sua semana.</h1>
+          <p class="lead">O EstudaIA organiza uma semana de estudos a partir da sua disciplina, objetivo e tempo disponível. Antes de ser construído, queremos saber se isso resolve um problema real.</p>
+          <div class="hero-actions"><a class="button" href="#teste">Fazer o teste</a><a class="button secondary" href="#como-funciona">Entender a proposta</a></div>
+          <p class="microcopy" style="margin-top:16px">Não pede login. O resultado é uma simulação para avaliar a ideia.</p>
+        </div>
+      </section>
+      <section id="como-funciona">
+        <div class="wrap">
+          <div class="section-heading"><h2>Menos indecisão, mais começo.</h2><p>O problema testado é simples: estudantes com pouco tempo sabem que precisam estudar, mas perdem energia decidindo o que priorizar e como distribuir as tarefas.</p></div>
+          <div class="grid">
+            <article class="card"><span class="n">01</span><h3>Você conta o contexto</h3><p>Disciplina, objetivo e horas livres ajudam a tornar o plano possível, não idealizado.</p></article>
+            <article class="card"><span class="n">02</span><h3>Vê um plano de 7 dias</h3><p>O protótipo mostra uma sequência curta de revisão, prática e uma checagem de progresso.</p></article>
+            <article class="card"><span class="n">03</span><h3>Conta se usaria</h3><p>Sua reação ajuda a decidir se a proposta deve continuar, ser ajustada ou ser abandonada.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="tester" id="teste">
+        <div class="wrap">
+          <div class="section-heading"><h2>Monte uma simulação rápida</h2><p>Preencha como se fosse usar hoje. Depois, avalie a utilidade do resultado.</p></div>
+          <form id="study-form">
+            <div class="fields">
+              <label>Curso ou área<input id="course" name="course" placeholder="Ex.: Administração" required /></label>
+              <label>Disciplina ou tema<input id="topic" name="topic" placeholder="Ex.: Gestão de projetos" required /></label>
+              <fieldset class="full" style="border:0;padding:0;margin:0"><legend style="font-weight:700;font-size:.93rem">Principal dificuldade</legend><div class="choices"><label class="choice"><input type="radio" name="pain" value="Não sei por onde começar" required><span>Não sei por onde começar</span></label><label class="choice"><input type="radio" name="pain" value="Não consigo manter rotina"><span>Não consigo manter rotina</span></label><label class="choice"><input type="radio" name="pain" value="Tenho pouco tempo"><span>Tenho pouco tempo</span></label><label class="choice"><input type="radio" name="pain" value="Não sei o que priorizar"><span>Não sei o que priorizar</span></label></div></fieldset>
+              <label>Horas livres nesta semana<select id="hours" name="hours" required><option value="">Selecione</option><option value="2">Até 2 horas</option><option value="4">3 a 4 horas</option><option value="6">5 a 6 horas</option><option value="8">7 horas ou mais</option></select></label>
+              <label>Objetivo desta semana<select id="goal" name="goal" required><option value="">Selecione</option><option>Preparar uma prova</option><option>Entender um conteúdo</option><option>Entregar um trabalho</option><option>Criar uma rotina</option></select></label>
+            </div>
+            <p class="form-note">Os dados do formulário ficam somente neste navegador durante o teste. Não informe dados pessoais.</p>
+            <button class="button" type="submit">Gerar plano de teste</button>
+          </form>
+          <div class="plan" id="plan" aria-live="polite">
+            <div class="plan-header"><div><h3 id="plan-title">Seu plano de 7 dias</h3><p id="plan-subtitle" style="margin:0;color:#577080"></p></div><span class="pill" id="plan-hours"></span></div>
+            <div class="days" id="days"></div>
+            <div class="feedback"><h3>Este plano te ajudaria a começar?</h3><p style="margin-bottom:0;color:#506978">Registre sua resposta e, ao final, baixe um comprovante para enviar a quem aplicou o teste.</p><div class="choices"><label class="choice"><input type="radio" name="intent" value="Usaria agora"><span>Usaria agora</span></label><label class="choice"><input type="radio" name="intent" value="Usaria com ajustes"><span>Usaria com ajustes</span></label><label class="choice"><input type="radio" name="intent" value="Não usaria"><span>Não usaria</span></label></div><label style="margin-top:16px">O que tornaria esse plano útil para você?<textarea id="comment" placeholder="Conte com suas palavras"></textarea></label><button class="button" type="button" id="save-feedback">Salvar e baixar minha resposta</button><div class="notice" id="notice">Resposta preparada. O arquivo foi baixado neste dispositivo.</div></div>
+          </div>
+        </div>
+      </section>
+      <section class="how" id="protocolo">
+        <div class="wrap"><div class="section-heading"><h2>Como usar esta página no experimento</h2><p>O protótipo existe para testar interesse e compreensão, não para substituir uma plataforma completa.</p></div><ol class="steps"><li>Convide cinco universitários que estudem ao menos uma disciplina nesta semana.</li><li>Peça que preencham o teste sem ajuda e observem onde hesitam.</li><li>Reúna o arquivo baixado e uma fala curta de cada pessoa para registrar as evidências.</li></ol></div>
+      </section>
+    </main>
+    <footer><div class="wrap">EstudaIA - protótipo de validação acadêmica. Nenhuma promessa de desempenho é feita nesta página.</div></footer>
+    <script>
+      const form = document.querySelector('#study-form'); const plan = document.querySelector('#plan'); const days = document.querySelector('#days');
+      const tasks = ['Definir um micro-objetivo e separar materiais', 'Estudar o conceito principal em bloco curto', 'Resolver ou revisar um exemplo prático', 'Retomar pontos difíceis com anotações', 'Aplicar o conteúdo em questões ou exercício', 'Revisar erros e criar cartões de memória', 'Fazer uma autoavaliação e ajustar a semana'];
+      form.addEventListener('submit', (event) => { event.preventDefault(); const data = Object.fromEntries(new FormData(form)); const weekly = Number(data.hours); const minutes = Math.max(20, Math.round((weekly * 60) / 5)); document.querySelector('#plan-title').textContent = `Plano de ${data.topic} para 7 dias`; document.querySelector('#plan-subtitle').textContent = `${data.course} · objetivo: ${data.goal.toLowerCase()}`; document.querySelector('#plan-hours').textContent = `${weekly}h disponíveis`; days.innerHTML = tasks.map((task,i) => `<div class="day"><strong>Dia ${i + 1}</strong>${i === 5 ? task.replace('questões ou exercício', `uma atividade de ${data.topic}`) : task}<br><span style="color:#6d8490">~${minutes} min</span></div>`).join(''); plan.classList.add('visible'); plan.scrollIntoView({behavior:'smooth', block:'start'}); localStorage.setItem('estudaia-context', JSON.stringify(data)); });
+      document.querySelector('#save-feedback').addEventListener('click', () => { const context = JSON.parse(localStorage.getItem('estudaia-context') || '{}'); const intent = document.querySelector('input[name="intent"]:checked'); if (!intent) { alert('Escolha uma das opções de interesse antes de salvar.'); return; } const response = { ...context, interesse: intent.value, comentario: document.querySelector('#comment').value.trim() || 'Sem comentário', respondido_em: new Date().toISOString(), aviso: 'Registro produzido no dispositivo do participante. Compartilhe o arquivo com quem está conduzindo o experimento.' }; const blob = new Blob([JSON.stringify(response, null, 2)], {type:'application/json'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'resposta-estudaia.json'; link.click(); URL.revokeObjectURL(link.href); document.querySelector('#notice').classList.add('visible'); });
+    </script>
+  </body>
+</html>
